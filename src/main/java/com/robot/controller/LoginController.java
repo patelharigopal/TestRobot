@@ -1,6 +1,8 @@
 package com.robot.controller;
 
 import javax.validation.Valid;
+import java.util.Set;
+import com.robot.model.Role;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -60,14 +62,47 @@ public class LoginController {
 	
 	@RequestMapping(value="/admin/home", method = RequestMethod.GET)
 	public ModelAndView home(){
-		ModelAndView modelAndView = new ModelAndView();
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
-		modelAndView.addObject("userName", "Welcome " + user.getName() + " " + user.getLastName() + " (" + user.getEmail() + ")");
-		modelAndView.addObject("adminMessage","Welcome To Our Site. Coming Soon....");
+		if(!hashRole(user, "ADMIN")){
+			return new ModelAndView("redirect:/access-denied");
+		}
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.addObject("userName", "Welcome Admmin " + user.getName() + " " + user.getLastName() + " (" + user.getEmail() + ")");
+		modelAndView.addObject("adminMessage","Welcome To Our Site (Admin User). Coming Soon....");
 		modelAndView.setViewName("admin/home");
 		return modelAndView;
 	}
 	
-
+	@RequestMapping(value="/home", method = RequestMethod.GET)
+	public ModelAndView userHome(){
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		User user = userService.findUserByEmail(auth.getName());
+		if(hashRole(user, "ADMIN")){
+			return new ModelAndView("redirect:/admin/home");
+		}
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.addObject("userName", "Welcome User " + user.getName() + " " + user.getLastName() + " (" + user.getEmail() + ")");
+		modelAndView.addObject("adminMessage","Welcome To Our Site (Normal User). Coming Soon....");
+		modelAndView.setViewName("home");
+		return modelAndView;
+	}
+	
+	@RequestMapping(value={"access-denied"}, method = RequestMethod.GET)
+	public ModelAndView login(){
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("access-denied");
+		return modelAndView;
+	}
+	
+	boolean hashRole(User user, String roleName){
+		Set<Role> roles = user.getRoles();
+		for (Role role : roles) {
+			System.out.println(role.getRole());
+			if(role.getRole().equalsIgnoreCase(roleName)){
+				return true;
+			}	
+		}
+		return false;
+	}
 }

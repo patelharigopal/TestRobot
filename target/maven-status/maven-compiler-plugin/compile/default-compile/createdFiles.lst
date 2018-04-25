@@ -1,0 +1,10 @@
+com\robot\service\UserServiceImpl.class
+com\robot\service\UserService.class
+com\robot\controller\LoginController.class
+com\robot\repository\UserRepository.class
+com\robot\configuration\SecurityConfiguration.class
+com\robot\model\Role.class
+com\robot\DemoApplication.class
+com\robot\repository\RoleRepository.class
+com\robot\configuration\WebMvcConfig.class
+com\robot\model\User.class
