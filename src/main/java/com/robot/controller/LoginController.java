@@ -68,7 +68,7 @@ public class LoginController {
 			return new ModelAndView("redirect:/access-denied");
 		}
 		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.addObject("userName", "Welcome Admmin " + user.getName() + " " + user.getLastName() + " (" + user.getEmail() + ")");
+		modelAndView.addObject("userName", "Welcome Admin " + user.getName() + " " + user.getLastName() + " (" + user.getEmail() + ")");
 		modelAndView.addObject("adminMessage","Welcome To Our Site (Admin User). Coming Soon....");
 		modelAndView.setViewName("admin/home");
 		return modelAndView;
